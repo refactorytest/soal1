@@ -6,17 +6,20 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-// app.use('/'.router());
 
+var fs = require("fs");
 router.post("/", function (req, res) {
-    let response = { ...res.body, ...req.headers };
-    console.log(
-      `${new Date()} Success : ${req.method} ${req.headers.host} ${JSON.stringify(
-        response
-      )} `
-    );
-    res.end(JSON.stringify(response));
+  let response = { ...res.body, ...req.headers };
+  let log = `[${new Date()}] Success : ${req.method} ${
+    req.headers.host
+  } ${JSON.stringify(response)} \n`;
+  fs.appendFile("server.log", log, (err) => {
+    if (err) console.log(err);
+    console.log("Successfully Written to File.");
   });
+  res.send(JSON.stringify(response));
+});
+
   app.use('/',router );
 app.get('*', (req, res) => {
     res.send('404 Not Found');
